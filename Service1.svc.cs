@@ -55,6 +55,8 @@ namespace OOP_Projekt6_WebService
             //Inserts show in the Show table
             db.Shows.InsertOnSubmit(show);
 
+            db.SubmitChanges();
+
             //Creates 80 seats with default State as false (empty, able to be reserved)
             List<Seating> seatings = new List<Seating>();
             for (int seat = 1; seat <= 80; seat++)
