@@ -95,9 +95,7 @@ namespace OOP_Projekt6_WebService
 		
 		private int _Seat;
 		
-		private System.Nullable<bool> _State;
-		
-		private EntityRef<Show> _Show;
+		private bool _State;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -107,13 +105,12 @@ namespace OOP_Projekt6_WebService
     partial void OnDateTimeChanged();
     partial void OnSeatChanging(int value);
     partial void OnSeatChanged();
-    partial void OnStateChanging(System.Nullable<bool> value);
+    partial void OnStateChanging(bool value);
     partial void OnStateChanged();
     #endregion
 		
 		public Seating()
 		{
-			this._Show = default(EntityRef<Show>);
 			OnCreated();
 		}
 		
@@ -128,10 +125,6 @@ namespace OOP_Projekt6_WebService
 			{
 				if ((this._DateTime != value))
 				{
-					if (this._Show.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
 					this.OnDateTimeChanging(value);
 					this.SendPropertyChanging();
 					this._DateTime = value;
@@ -141,7 +134,7 @@ namespace OOP_Projekt6_WebService
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Seat", DbType="Int NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Seat", DbType="Int NOT NULL", IsPrimaryKey=true)]
 		public int Seat
 		{
 			get
@@ -161,8 +154,8 @@ namespace OOP_Projekt6_WebService
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_State", DbType="Bit")]
-		public System.Nullable<bool> State
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_State", DbType="Bit NOT NULL")]
+		public bool State
 		{
 			get
 			{
@@ -177,40 +170,6 @@ namespace OOP_Projekt6_WebService
 					this._State = value;
 					this.SendPropertyChanged("State");
 					this.OnStateChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Show_Seating", Storage="_Show", ThisKey="DateTime", OtherKey="DateTime", IsForeignKey=true)]
-		public Show Show
-		{
-			get
-			{
-				return this._Show.Entity;
-			}
-			set
-			{
-				Show previousValue = this._Show.Entity;
-				if (((previousValue != value) 
-							|| (this._Show.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Show.Entity = null;
-						previousValue.Seating = null;
-					}
-					this._Show.Entity = value;
-					if ((value != null))
-					{
-						value.Seating = this;
-						this._DateTime = value.DateTime;
-					}
-					else
-					{
-						this._DateTime = default(System.DateTime);
-					}
-					this.SendPropertyChanged("Show");
 				}
 			}
 		}
@@ -246,8 +205,6 @@ namespace OOP_Projekt6_WebService
 		
 		private string _Name;
 		
-		private EntityRef<Seating> _Seating;
-		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -260,7 +217,6 @@ namespace OOP_Projekt6_WebService
 		
 		public Show()
 		{
-			this._Seating = default(EntityRef<Seating>);
 			OnCreated();
 		}
 		
@@ -300,35 +256,6 @@ namespace OOP_Projekt6_WebService
 					this._Name = value;
 					this.SendPropertyChanged("Name");
 					this.OnNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Show_Seating", Storage="_Seating", ThisKey="DateTime", OtherKey="DateTime", IsUnique=true, IsForeignKey=false)]
-		public Seating Seating
-		{
-			get
-			{
-				return this._Seating.Entity;
-			}
-			set
-			{
-				Seating previousValue = this._Seating.Entity;
-				if (((previousValue != value) 
-							|| (this._Seating.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Seating.Entity = null;
-						previousValue.Show = null;
-					}
-					this._Seating.Entity = value;
-					if ((value != null))
-					{
-						value.Show = this;
-					}
-					this.SendPropertyChanged("Seating");
 				}
 			}
 		}

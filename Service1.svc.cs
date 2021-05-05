@@ -55,19 +55,16 @@ namespace OOP_Projekt6_WebService
             //Inserts show in the Show table
             db.Shows.InsertOnSubmit(show);
 
-            db.SubmitChanges();
-
             //Creates 80 seats with default State as false (empty, able to be reserved)
-            List<Seating> seatings = new List<Seating>();
+            //List<Seating> seatings = new List<Seating>();
             for (int seat = 1; seat <= 80; seat++)
             {
-                seatings.Add(new Seating() { DateTime = dateTime, Seat = seat, State = false });
+                //seatings.Add(new Seating() { DateTime = dateTime, Seat = seat, State = false });
+                db.Seatings.InsertOnSubmit(new Seating() { DateTime = dateTime, Seat = seat, State = false });
+                db.SubmitChanges();
             }
 
             //Inserts those seats into the Seating table
-            db.Seatings.InsertAllOnSubmit(seatings);
-
-            db.SubmitChanges();
 
             CheckOldEntries();
             return true;

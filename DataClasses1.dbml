@@ -3,16 +3,14 @@
   <Table Name="dbo.Seating" Member="Seatings">
     <Type Name="Seating">
       <Column Name="DateTime" Type="System.DateTime" DbType="DateTime NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Seat" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="State" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Association Name="Show_Seating" Member="Show" ThisKey="DateTime" OtherKey="DateTime" Type="Show" IsForeignKey="true" />
+      <Column Name="Seat" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="State" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
   <Table Name="dbo.Show" Member="Shows">
     <Type Name="Show">
       <Column Name="DateTime" Type="System.DateTime" DbType="DateTime NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Association Name="Show_Seating" Member="Seating" ThisKey="DateTime" OtherKey="DateTime" Type="Seating" Cardinality="One" />
     </Type>
   </Table>
 </Database>
