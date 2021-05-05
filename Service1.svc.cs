@@ -99,6 +99,71 @@ namespace OOP_Projekt6_WebService
         }
 
         /// <summary>
+        /// This method returns all available shows.
+        /// </summary>
+        /// <returns>A Dictionary<Datetime, string> where the key is date and time when show takes place and value is the name of the show.</returns>
+        public Dictionary<DateTime, string> GetShows()
+        {
+            Dictionary<DateTime, string> shows = new Dictionary<DateTime, string>();
+
+            var availableshows =
+                from shws in db.Shows
+                select shws;
+
+            foreach (var show in availableshows)
+            {
+                shows.Add(show.DateTime, show.Name);
+            }
+
+            return shows;
+        }
+
+        /// <summary>
+        /// This method returns all available shows by selected name.
+        /// </summary>
+        /// <param name="name">Name of the show.</param>
+        /// <returns>A Dictionary<Datetime, string> where the key is date and time when show takes place and value is the name of the show.</returns>
+        public Dictionary<DateTime, string> GetShowsByName(string name)
+        {
+            Dictionary<DateTime, string> shows = new Dictionary<DateTime, string>();
+
+            var showname =
+                from show in db.Shows
+                where show.Name.Equals(name)
+                select show;
+
+            foreach (var show in showname)
+            {
+                shows.Add(show.DateTime, show.Name);
+            }
+
+            return shows;
+        }
+
+        /// <summary>
+        /// This methods returns all available shows by selected date.
+        /// </summary>
+        /// <param name="date">Date, when the shows take place.</param>
+        /// <returns>A Dictionary<Datetime, string> where the key is date and time when show takes place and value is the name of the show.</returns>
+        public Dictionary<DateTime, string> GetShowsByDate(DateTime date)
+        {
+            Dictionary<DateTime, string> shows = new Dictionary<DateTime, string>();
+
+            var showname =
+                from show in db.Shows
+                where show.DateTime.Date.Equals(date.Date)
+                select show;
+
+            foreach (var show in showname)
+            {
+                shows.Add(show.DateTime, show.Name);
+            }
+
+            return shows;
+        }
+
+
+        /// <summary>
         /// This method is used to reserve a specific seat determined by the datetime and seat.
         /// </summary>
         /// <param name="dateTime">Date and time, when the show takes place.</param>

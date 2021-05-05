@@ -28,6 +28,15 @@ namespace OOP_Projekt6_WebService
         Dictionary<int, bool?> GetSeatingInfo(DateTime dateTime);
 
         [OperationContract]
+        Dictionary<DateTime, string> GetShows();
+
+        [OperationContract]
+        Dictionary<DateTime, string> GetShowsByName(string name);
+
+        [OperationContract]
+        Dictionary<DateTime, string> GetShowsByDate(DateTime date);
+
+        [OperationContract]
         bool MakeReservation(DateTime dateTime, int seat);
 
         [OperationContract]
