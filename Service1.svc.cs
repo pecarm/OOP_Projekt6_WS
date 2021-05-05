@@ -65,6 +65,8 @@ namespace OOP_Projekt6_WebService
             //Inserts those seats into the Seating table
             db.Seatings.InsertAllOnSubmit(seatings);
 
+            db.SubmitChanges();
+
             CheckOldEntries();
             return true;
         }
@@ -162,7 +164,6 @@ namespace OOP_Projekt6_WebService
             return shows;
         }
 
-
         /// <summary>
         /// This method is used to reserve a specific seat determined by the datetime and seat.
         /// </summary>
@@ -226,6 +227,8 @@ namespace OOP_Projekt6_WebService
 
             db.Shows.DeleteAllOnSubmit(oldShows);
             db.Seatings.DeleteAllOnSubmit(oldSeatings);
+
+            db.SubmitChanges();
         }
     }
 }
