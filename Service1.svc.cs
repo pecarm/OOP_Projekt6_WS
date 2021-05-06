@@ -54,17 +54,56 @@ namespace OOP_Projekt6_WebService
 
             //Inserts show in the Show table
             db.Shows.InsertOnSubmit(show);
+            db.SubmitChanges();
 
-            //Creates 80 seats with default State as false (empty, able to be reserved)
-            //List<Seating> seatings = new List<Seating>();
+            //Creates 80 seats with default State as false (empty, able to be reserved) and inserts them in the Seating table
             for (int seat = 1; seat <= 80; seat++)
             {
-                //seatings.Add(new Seating() { DateTime = dateTime, Seat = seat, State = false });
                 db.Seatings.InsertOnSubmit(new Seating() { DateTime = dateTime, Seat = seat, State = false });
                 db.SubmitChanges();
             }
 
-            //Inserts those seats into the Seating table
+            CheckOldEntries();
+            return true;
+        }
+
+        /// <summary>
+        /// This method is used to remove an existing show from the programme. It removes an entry from the Show table and removes all 80 seat entries from the Seating table.
+        /// </summary>
+        /// <param name="dateTime">Date and time, when the show takes place.</param>
+        /// <returns>False, if there is no show of given date and time.
+        /// True, if the operation was a success.</returns>
+        public bool DeleteShow(DateTime dateTime)
+        {
+            //Returns false if there is no show on the same date and time
+            if (!db.Shows.Any(a => a.DateTime.Equals(dateTime)))
+            {
+                CheckOldEntries();
+                return false;
+            }
+
+            //Returns a list of all shows of given date and time (precisely one, DateTime is the primary key)
+            var show =
+                from shows in db.Shows
+                where shows.DateTime.Equals(dateTime)
+                select shows;
+
+            //Deletes
+            db.Shows.DeleteOnSubmit(show.First());
+            db.SubmitChanges();
+
+            //Returns a list of all seats of given date and time
+            var seats =
+                from seatings in db.Seatings
+                where seatings.DateTime.Equals(dateTime)
+                select seatings;
+
+            //Deletes all of them
+            foreach (var seat in seats)
+            {
+                db.Seatings.DeleteOnSubmit(seat);
+                db.SubmitChanges();
+            }
 
             CheckOldEntries();
             return true;

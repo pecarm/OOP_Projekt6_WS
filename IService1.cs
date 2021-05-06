@@ -25,6 +25,9 @@ namespace OOP_Projekt6_WebService
         bool AddShow(DateTime dateTime, string name);
 
         [OperationContract]
+        bool DeleteShow(DateTime dateTime);
+
+        [OperationContract]
         Dictionary<int, bool?> GetSeatingInfo(DateTime dateTime);
 
         [OperationContract]
