@@ -1,16 +1,19 @@
-﻿<?xml version="1.0" encoding="utf-8"?><Database Name="Divadlo" Class="DataClasses1DataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="Divadlo" Class="DivadloL2SQLDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Connection Mode="WebSettings" ConnectionString="Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=&quot;C:\Users\marti\Desktop\DOCUMENTS\3. Ročník Bc\Letní semestr\Objektově orientované programování\OOP_Projekt6_WebService\Divadlo.mdf&quot;;Integrated Security=True;Connect Timeout=30" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="DivadloConnectionString" Provider="System.Data.SqlClient" />
   <Table Name="dbo.Seating" Member="Seatings">
     <Type Name="Seating">
       <Column Name="DateTime" Type="System.DateTime" DbType="DateTime NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Seat" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="State" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Client" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Association Name="Show_Seating" Member="Show" ThisKey="DateTime" OtherKey="DateTime" Type="Show" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.Show" Member="Shows">
     <Type Name="Show">
       <Column Name="DateTime" Type="System.DateTime" DbType="DateTime NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Association Name="Show_Seating" Member="Seatings" ThisKey="DateTime" OtherKey="DateTime" Type="Seating" />
     </Type>
   </Table>
 </Database>

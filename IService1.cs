@@ -31,6 +31,9 @@ namespace OOP_Projekt6_WebService
         Dictionary<int, bool?> GetSeatingInfo(DateTime dateTime);
 
         [OperationContract]
+        string GetReservationName(DateTime dateTime, int seat);
+
+        [OperationContract]
         Dictionary<DateTime, string> GetShows();
 
         [OperationContract]
@@ -40,7 +43,7 @@ namespace OOP_Projekt6_WebService
         Dictionary<DateTime, string> GetShowsByDate(DateTime date);
 
         [OperationContract]
-        bool MakeReservation(DateTime dateTime, int seat);
+        bool MakeReservation(DateTime dateTime, int seat, string name);
 
         [OperationContract]
         bool CancelReservation(DateTime dateTime, int seat);

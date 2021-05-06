@@ -23,7 +23,7 @@ namespace OOP_Projekt6_WebService
 	
 	
 	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="Divadlo")]
-	public partial class DataClasses1DataContext : System.Data.Linq.DataContext
+	public partial class DivadloL2SQLDataContext : System.Data.Linq.DataContext
 	{
 		
 		private static System.Data.Linq.Mapping.MappingSource mappingSource = new AttributeMappingSource();
@@ -38,31 +38,31 @@ namespace OOP_Projekt6_WebService
     partial void DeleteShow(Show instance);
     #endregion
 		
-		public DataClasses1DataContext() : 
+		public DivadloL2SQLDataContext() : 
 				base(global::System.Configuration.ConfigurationManager.ConnectionStrings["DivadloConnectionString"].ConnectionString, mappingSource)
 		{
 			OnCreated();
 		}
 		
-		public DataClasses1DataContext(string connection) : 
+		public DivadloL2SQLDataContext(string connection) : 
 				base(connection, mappingSource)
 		{
 			OnCreated();
 		}
 		
-		public DataClasses1DataContext(System.Data.IDbConnection connection) : 
+		public DivadloL2SQLDataContext(System.Data.IDbConnection connection) : 
 				base(connection, mappingSource)
 		{
 			OnCreated();
 		}
 		
-		public DataClasses1DataContext(string connection, System.Data.Linq.Mapping.MappingSource mappingSource) : 
+		public DivadloL2SQLDataContext(string connection, System.Data.Linq.Mapping.MappingSource mappingSource) : 
 				base(connection, mappingSource)
 		{
 			OnCreated();
 		}
 		
-		public DataClasses1DataContext(System.Data.IDbConnection connection, System.Data.Linq.Mapping.MappingSource mappingSource) : 
+		public DivadloL2SQLDataContext(System.Data.IDbConnection connection, System.Data.Linq.Mapping.MappingSource mappingSource) : 
 				base(connection, mappingSource)
 		{
 			OnCreated();
@@ -97,6 +97,10 @@ namespace OOP_Projekt6_WebService
 		
 		private bool _State;
 		
+		private string _Client;
+		
+		private EntityRef<Show> _Show;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -107,10 +111,13 @@ namespace OOP_Projekt6_WebService
     partial void OnSeatChanged();
     partial void OnStateChanging(bool value);
     partial void OnStateChanged();
+    partial void OnClientChanging(string value);
+    partial void OnClientChanged();
     #endregion
 		
 		public Seating()
 		{
+			this._Show = default(EntityRef<Show>);
 			OnCreated();
 		}
 		
@@ -125,6 +132,10 @@ namespace OOP_Projekt6_WebService
 			{
 				if ((this._DateTime != value))
 				{
+					if (this._Show.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
 					this.OnDateTimeChanging(value);
 					this.SendPropertyChanging();
 					this._DateTime = value;
@@ -174,6 +185,60 @@ namespace OOP_Projekt6_WebService
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Client", DbType="NVarChar(100)")]
+		public string Client
+		{
+			get
+			{
+				return this._Client;
+			}
+			set
+			{
+				if ((this._Client != value))
+				{
+					this.OnClientChanging(value);
+					this.SendPropertyChanging();
+					this._Client = value;
+					this.SendPropertyChanged("Client");
+					this.OnClientChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Show_Seating", Storage="_Show", ThisKey="DateTime", OtherKey="DateTime", IsForeignKey=true)]
+		public Show Show
+		{
+			get
+			{
+				return this._Show.Entity;
+			}
+			set
+			{
+				Show previousValue = this._Show.Entity;
+				if (((previousValue != value) 
+							|| (this._Show.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Show.Entity = null;
+						previousValue.Seatings.Remove(this);
+					}
+					this._Show.Entity = value;
+					if ((value != null))
+					{
+						value.Seatings.Add(this);
+						this._DateTime = value.DateTime;
+					}
+					else
+					{
+						this._DateTime = default(System.DateTime);
+					}
+					this.SendPropertyChanged("Show");
+				}
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -205,6 +270,8 @@ namespace OOP_Projekt6_WebService
 		
 		private string _Name;
 		
+		private EntitySet<Seating> _Seatings;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -217,6 +284,7 @@ namespace OOP_Projekt6_WebService
 		
 		public Show()
 		{
+			this._Seatings = new EntitySet<Seating>(new Action<Seating>(this.attach_Seatings), new Action<Seating>(this.detach_Seatings));
 			OnCreated();
 		}
 		
@@ -260,6 +328,19 @@ namespace OOP_Projekt6_WebService
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Show_Seating", Storage="_Seatings", ThisKey="DateTime", OtherKey="DateTime")]
+		public EntitySet<Seating> Seatings
+		{
+			get
+			{
+				return this._Seatings;
+			}
+			set
+			{
+				this._Seatings.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -278,6 +359,18 @@ namespace OOP_Projekt6_WebService
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_Seatings(Seating entity)
+		{
+			this.SendPropertyChanging();
+			entity.Show = this;
+		}
+		
+		private void detach_Seatings(Seating entity)
+		{
+			this.SendPropertyChanging();
+			entity.Show = null;
 		}
 	}
 }

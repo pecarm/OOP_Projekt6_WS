@@ -12,7 +12,7 @@ namespace OOP_Projekt6_WebService
     // NOTE: In order to launch WCF Test Client for testing this service, please select Service1.svc or Service1.svc.cs at the Solution Explorer and start debugging.
     public class Service1 : IService1
     {
-        readonly DataClasses1DataContext db = new DataClasses1DataContext(); //Establishes connection to the Divadlo database
+        readonly DivadloL2SQLDataContext db = new DivadloL2SQLDataContext(); //Establishes connection to the Divadlo database
 
         public string GetData(int value)
         {
@@ -139,6 +139,23 @@ namespace OOP_Projekt6_WebService
         }
 
         /// <summary>
+        /// Returns the name of the person, who made a reservation.
+        /// </summary>
+        /// <param name="dateTime">Date and time, when the show takes place.</param>
+        /// <param name="seat">Number of reserved seat.</param>
+        /// <returns>Name of the person, who reserved the seat.</returns>
+        public string GetReservationName(DateTime dateTime, int seat)
+        {
+            //DateTime and Seat are primary key, returns only one entry, therefore we can return name.First()
+            var name =
+                from seating in db.Seatings
+                where seating.DateTime.Equals(dateTime) && seating.Seat == seat
+                select seating.Client;
+
+            return name.First();
+        }
+
+        /// <summary>
         /// This method returns all available shows.
         /// </summary>
         /// <returns>A Dictionary<Datetime, string> where the key is date and time when show takes place and value is the name of the show.</returns>
@@ -208,14 +225,22 @@ namespace OOP_Projekt6_WebService
         /// <param name="dateTime">Date and time, when the show takes place.</param>
         /// <param name="seat">Number of the seat.</param>
         /// <returns>False if there is no show on chosen date and time or if the seat doesnt exist. Otherwise returns true.</returns>
-        public bool MakeReservation(DateTime dateTime, int seat)
+        public bool MakeReservation(DateTime dateTime, int seat, string name)
         {
             if (!db.Seatings.Any(a => a.DateTime.Equals(dateTime) && a.Seat == seat))
             {
                 return false;
             }
+
+            string shortened = name;
+            if (name.Length > 100)
+            {
+                shortened = name.Substring(0, 100);
+            }
+
             Seating seating = db.Seatings.Single(a => a.DateTime == dateTime && a.Seat == seat);
             seating.State = true;
+            seating.Client = shortened;
 
             db.SubmitChanges();
 
@@ -236,6 +261,7 @@ namespace OOP_Projekt6_WebService
             }
             Seating seating = db.Seatings.Single(a => a.DateTime == dateTime && a.Seat == seat);
             seating.State = false;
+            seating.Client = null;
 
             db.SubmitChanges();
 
