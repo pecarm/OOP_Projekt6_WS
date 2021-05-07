@@ -99,8 +99,6 @@ namespace OOP_Projekt6_WebService
 		
 		private string _Client;
 		
-		private EntityRef<Show> _Show;
-		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -117,7 +115,6 @@ namespace OOP_Projekt6_WebService
 		
 		public Seating()
 		{
-			this._Show = default(EntityRef<Show>);
 			OnCreated();
 		}
 		
@@ -132,10 +129,6 @@ namespace OOP_Projekt6_WebService
 			{
 				if ((this._DateTime != value))
 				{
-					if (this._Show.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
 					this.OnDateTimeChanging(value);
 					this.SendPropertyChanging();
 					this._DateTime = value;
@@ -205,40 +198,6 @@ namespace OOP_Projekt6_WebService
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Show_Seating", Storage="_Show", ThisKey="DateTime", OtherKey="DateTime", IsForeignKey=true)]
-		public Show Show
-		{
-			get
-			{
-				return this._Show.Entity;
-			}
-			set
-			{
-				Show previousValue = this._Show.Entity;
-				if (((previousValue != value) 
-							|| (this._Show.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Show.Entity = null;
-						previousValue.Seatings.Remove(this);
-					}
-					this._Show.Entity = value;
-					if ((value != null))
-					{
-						value.Seatings.Add(this);
-						this._DateTime = value.DateTime;
-					}
-					else
-					{
-						this._DateTime = default(System.DateTime);
-					}
-					this.SendPropertyChanged("Show");
-				}
-			}
-		}
-		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -270,8 +229,6 @@ namespace OOP_Projekt6_WebService
 		
 		private string _Name;
 		
-		private EntitySet<Seating> _Seatings;
-		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -284,7 +241,6 @@ namespace OOP_Projekt6_WebService
 		
 		public Show()
 		{
-			this._Seatings = new EntitySet<Seating>(new Action<Seating>(this.attach_Seatings), new Action<Seating>(this.detach_Seatings));
 			OnCreated();
 		}
 		
@@ -328,19 +284,6 @@ namespace OOP_Projekt6_WebService
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Show_Seating", Storage="_Seatings", ThisKey="DateTime", OtherKey="DateTime")]
-		public EntitySet<Seating> Seatings
-		{
-			get
-			{
-				return this._Seatings;
-			}
-			set
-			{
-				this._Seatings.Assign(value);
-			}
-		}
-		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -359,18 +302,6 @@ namespace OOP_Projekt6_WebService
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
-		}
-		
-		private void attach_Seatings(Seating entity)
-		{
-			this.SendPropertyChanging();
-			entity.Show = this;
-		}
-		
-		private void detach_Seatings(Seating entity)
-		{
-			this.SendPropertyChanging();
-			entity.Show = null;
 		}
 	}
 }
